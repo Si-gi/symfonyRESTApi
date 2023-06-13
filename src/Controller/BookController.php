@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class BookController extends AbstractController
 {
@@ -39,7 +40,8 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/api/books/{id}", name="deteleBook", methods={"DELETE"})
+     * @Route("/api/admin/books/{id}", name="deteleBook", methods={"DELETE"})
+     * @IsGranted("ROLE_ADMIN", subject="book", message="Vous n'avez pas les droits suffisants")
      */
     public function deleteBook(Book $book, EntityManagerInterface $em): JsonResponse 
     {
@@ -49,7 +51,8 @@ class BookController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
     /**
-     * @Route("/api/books", name="createBook", methods={"POST"})
+     * @Route("/api/admin/books", name="createBook", methods={"POST"})
+     * @IsGranted("ROLE_ADMIN", subject="book", message="Vous n'avez pas les droits suffisants")
      */
     public function createBook(Request $request, 
             SerializerInterface $serializer, 
@@ -85,7 +88,9 @@ class BookController extends AbstractController
    }
 
     /**
-     * @Route("/api/books/{id}", name="updateBook", methods={"PUT"})
+     * @Route("/api/admin/books/{id}", name="updateBook", methods={"PUT"})
+     * @IsGranted("ROLE_ADMIN", subject="book", message="Vous n'avez pas les droits suffisants")
+     * 
      */
    public function updateBook(Request $request, 
    SerializerInterface $serializer, 

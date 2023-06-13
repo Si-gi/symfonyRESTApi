@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class AuthorController extends AbstractController
 {
@@ -38,7 +39,9 @@ class AuthorController extends AbstractController
     }
 
      /**
-     * @Route("/api/authors/{id}", name="deteleAuthor", methods={"DELETE"})
+     * @Route("/api/admin/authors/{id}", name="deteleAuthor", methods={"DELETE"})
+     * @IsGranted("ROLE_ADMIN", message="Vous n'avez pas les droits suffisants")
+     * 
      */
     public function deleteAuthor(Author $author, EntityManagerInterface $em): JsonResponse 
     {
@@ -49,7 +52,8 @@ class AuthorController extends AbstractController
     }
 
     /**
-     * @Route("/api/authors", name="createAuthor", methods={"POST"})
+     * @Route("/api/admin/authors", name="createAuthor", methods={"POST"})
+     * @IsGranted("ROLE_ADMIN", message="Vous n'avez pas les droits suffisants")
      */
     public function createAuthor(
         Request $request, 
@@ -78,7 +82,9 @@ class AuthorController extends AbstractController
    }
 
     /**
-     * @Route("/api/authors/{id}", name="updateAuthor", methods={"PUT"})
+     * @Route("/api/admin/authors/{id}", name="updateAuthor", methods={"PUT"})
+     * @IsGranted("ROLE_ADMIN", message="Vous n'avez pas les droits suffisants")
+     * 
      */
    public function updateAuthor(Request $request, 
    SerializerInterface $serializer, 
