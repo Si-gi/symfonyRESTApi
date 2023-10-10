@@ -21,6 +21,7 @@ class AuthorController extends AbstractController
 {
     /**
      * @Route("/api/authors", name="authors", methods={"GET"})
+     * @IsGranted("ROLE_USER", message="Vous n'avez pas les droits suffisants")
      */
     public function getAllAuthor(AuthorRepository $authorRepository, SerializerInterface $serializer): JsonResponse
     {

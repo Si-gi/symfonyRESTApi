@@ -52,7 +52,7 @@ class BookController extends AbstractController
     }
     /**
      * @Route("/api/admin/books", name="createBook", methods={"POST"})
-     * @IsGranted("ROLE_ADMIN", subject="book", message="Vous n'avez pas les droits suffisants")
+     * @IsGranted("ROLE_ADMIN", message="Vous n'avez pas les droits suffisants")
      */
     public function createBook(Request $request, 
             SerializerInterface $serializer, 
