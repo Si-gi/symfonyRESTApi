@@ -2,12 +2,11 @@
 // tests/Repository/UserRepositoryTest.php
 namespace App\Tests\Controller;
 
-use App\Repository\BookRepository;
 use App\Repository\AuthorRepository;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class BookControllerTest extends WebTestCase
+class AuthorControllerTest extends WebTestCase
 {
    
     protected function createAuthenticatedClient($client, $username = 'user', $password = 'password')
@@ -31,64 +30,63 @@ class BookControllerTest extends WebTestCase
         return $client;
     }
 
-    public function testGetBookList(){
+    public function testGetAuthorList(){
         $client = static::createClient();
 
-        $client->request('GET', '/api/books');
+        $client->request('GET', '/api/authors');
 
         $this->assertResponseStatusCodeSame(401);
         
         $Authclient = $this->createAuthenticatedClient($client, "user@bookapi.com", "password");
-        $Authclient->request('GET', '/api/books');
+        $Authclient->request('GET', '/api/authors');
         $this->assertResponseIsSuccessful();
     } 
 
-    public function testDeleteBook(){
+    public function testDeleteAuthor(){
         $client = static::createClient();
-        $bookRepository = static::getContainer()->get(BookRepository::class);
-        $lastBook = $bookRepository->findOneBy(array(), array('id' => 'DESC'));
-        $this->assertNotEmpty($lastBook);
-        $client->request("DELETE", "/api/admin/books/".$lastBook->getId());
+        $authorRepository = static::getContainer()->get(AuthorRepository::class);
+        $lastAuthor = $authorRepository->findOneBy(array(), array('id' => 'DESC'));
+        $this->assertNotEmpty($lastAuthor);
+        $client->request("DELETE", "/api/admin/authors/".$lastAuthor->getId());
         $this->assertResponseStatusCodeSame(401);
 
         $authclient = $this->createAuthenticatedClient($client, "user@bookapi.com", "password");
-        $authclient->request("DELETE", "/api/admin/books/".$lastBook->getId());
+        $authclient->request("DELETE", "/api/admin/authors/".$lastAuthor->getId());
         $this->assertResponseStatusCodeSame(403);
 
         $adminAuthclient = $this->createAuthenticatedClient($client, "admin@bookapi.com", "password");
-        $adminAuthclient->request("DELETE", "/api/admin/books/".$lastBook->getId());
+        $adminAuthclient->request("DELETE", "/api/admin/authors/".$lastAuthor->getId());
         $this->assertResponseIsSuccessful();
     }
 
-    public function testAddBook(){
+    public function testAddAuthor(){
         $client = static::createClient();
 
         $authorRepository = static::getContainer()->get(AuthorRepository::class);
         $lastAuthor = $authorRepository->findOneBy(array(), array('id' => 'DESC'));
-        $book = json_encode([
-            'title' => "Title",
-            'coverText' => "Cover text",
-            'idAuthor' => $lastAuthor->getId()
+        $author = json_encode([
+            'firstName' => "TestName",
+            'lastname' => "TestLastName"
         ]);
 
-        $client->request("POST", "/api/admin/books", [$book]);
+        $client->request("POST", "/api/admin/authors", [$author]);
         $this->assertResponseStatusCodeSame(401);
 
         $authclient = $this->createAuthenticatedClient($client, "user@bookapi.com", "password");
-        $authclient->request("POST", "/api/admin/books", [$book]);
+        $authclient->request("POST", "/api/admin/authors", [$author]);
         $this->assertResponseStatusCodeSame(403);   
 
 
         $adminAuthclient = $this->createAuthenticatedClient($client, "admin@bookapi.com", "password");
-        $adminAuthclient->request("POST", "/api/admin/books", [], [],['CONTENT_TYPE' => 'application/json'], $book);
-        $this->assertResponseStatusCodeSame(201);
+        $adminAuthclient->request("POST", "/api/admin/authors", [], [],['CONTENT_TYPE' => 'application/json'], $author);
+        $this->assertResponseStatusCodeSame(201);   
 
-        $bookRepository = static::getContainer()->get(BookRepository::class);
-        $lastBook = $bookRepository->findOneBy(array(), array('id' => 'DESC'));
-        $this->assertStringContainsString("Title", $lastBook->getTitle());
+        $authorRepository = static::getContainer()->get(AuthorRepository::class);
+        $lastAuthor = $authorRepository->findOneBy(array(), array('id' => 'DESC'));
+        $this->assertStringContainsString("TestName", $lastAuthor->getFirstName());
     }
 
-    // public function testUpdateBook(){
+    // public function testUpdateAuthor(){
     //     $client = static::createClient();
 
     // }
